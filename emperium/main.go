@@ -31,6 +31,7 @@ func main() {
 	var unWatchedMaps []*ebpf.Map // Hold references to maps we don't
 
 	name, contents := create_maps(10000) // Generate unique names/contents for the maps
+	//var validMaps = map[int]bool
 	// Lets create many maps
 	for i := range name {
 		mapSpec.Name = name[i]
@@ -42,18 +43,19 @@ func main() {
 			log.Error("map create fail ")
 			panic(err)
 		}
-		// if generatedMaps[i].position != 0 {
-		// 	watchedMaps[(generatedMaps[i].position - 1)] = m
-		// } else {
-		unWatchedMaps = append(unWatchedMaps, m) // This is so we keep references to all the maps (stops the )
-		// }
+		if i < 4 { // Just grab the first four maps for now // TODO:
+			watchedMaps[i] = m
+		} else {
+			unWatchedMaps = append(unWatchedMaps, m) // This is so we keep references to all the maps (stops the )
+		}
 	}
 
 	fmt.Println("Data system>", color.GreenString("Ready"))
 
-	_, garbage := os.LookupEnv("SKIPGARBAGE")
+	_, garbage := os.LookupEnv("SKIPREFRESH")
 	if !garbage {
 		// Not sure why this is needed at this time
+		fmt.Print("Data Systems> Records will be refreshed")
 		go func() {
 			//give the maps a little prod, to stop them being cleaned up
 			for i := range unWatchedMaps {
