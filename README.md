@@ -17,6 +17,38 @@ To build the stolen copy of the `emperium` system:
 
 In order to run the **Emperium** system, it must be started with `sudo` in order to have the privileges to interact with 🐝 eBPF, including programs and maps.
 
+```
+
+             ._,.
+           "..-..pf.
+          -L   ..#'
+        .+_L  ."]#
+        ,'j' .+.j'                 -'.__..,.,p.
+       _~ #..<..0.                 .J-.''..._f.
+      .7..#_.. _f.                .....-..,'4'
+      ;' ,#j.  T'      ..         ..J....,'.j'
+     .' .."^.,-0.,,,,yMMMMM,.    ,-.J...+'.j@
+    .'.'...' .yMMMMM0M@^='""g.. .'..J..".'.jH
+    j' .'1'  q'^)@@#"^".'"='BNg_...,]_)'...0-
+   .T ...I. j"    .'..+,_.'3#MMM0MggCBf....F.
+   j/.+'.{..+       '^~'-^~~""""'"""?'"'''1'
+   .... .y.}                  '.._-:'_...jf 
+   g-.  .Lg'                 ..,..'-....,'.
+  .'.   .Y^                  .....',].._f
+  ......-f.                 .-,,.,.-:--&'
+                            .'...'..'_J'
+                            .~......'#'        Tie Fighter Manufacturing   
+                            '..,,.,_]'           Security Systems
+                            .L..'..''.
+Data system> Initialising...
+Data system> Ready
+Security Status> Enabled
+Security Lock 1>  [ ▮ ]
+Security Lock 2>  [ ▮ ]
+Security Lock 3>  [ ▮ ]
+Security Lock 4>  [ ▮ ]
+```
+
 ## Notes:
 
 When running `emperium` it will create 1000s of maps in order to make it more difficult to find the correct maps (more to do on that). **Currently** there is a go routine that will prod a bunch of the go routines to stop them dissapearing after ~2 minutes.
