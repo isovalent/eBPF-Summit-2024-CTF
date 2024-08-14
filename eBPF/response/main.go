@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/binary"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -13,6 +14,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/cilium/ebpf"
 	log "github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
@@ -41,6 +43,10 @@ func main() {
 	// Load pre-compiled programs into the kernel.
 	objs := udpObjects{}
 	if err := loadUdpObjects(&objs, nil); err != nil {
+		var verr *ebpf.VerifierError
+		if errors.As(err, &verr) {
+			fmt.Printf("%+v\n", verr)
+		}
 		log.Fatalf("loading objects: %s", err)
 	}
 

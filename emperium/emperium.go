@@ -5,9 +5,11 @@ import (
 	log "log/slog"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/cilium/ebpf"
+	"github.com/fatih/color"
 )
 
 // pass map pointers once all the maps have been created as finding existing maps seems impossible
@@ -41,7 +43,11 @@ func (s *securityLevel) firstLock(m *ebpf.Map) error {
 	}
 	strValue := string(value[:])
 	correctValue := Reverse(strValue)
-	// Shouldn't ever error
+	// Horrific string manipulation as we can't get JUST the name of the map
+	a := strings.Split(m.String(), "(")
+	b := strings.Split(a[1], ")")
+	fmt.Println("Data system>", color.RedString(fmt.Sprintf("Map [%s] is corrupt", b[0])))
+
 	for {
 		err := m.Lookup(uint8(1), &value)
 		if err != nil {
@@ -58,9 +64,8 @@ func (s *securityLevel) firstLock(m *ebpf.Map) error {
 }
 
 func (s *securityLevel) secondLock(m *ebpf.Map) error {
-	fmt.Printf("CONNECT> Empire mainframe (10.0.0.1)\n")
+	fmt.Println("Connect>", color.YellowString("Empire local Mainframe"))
 	conn, err := net.DialUDP("udp", nil, &net.UDPAddr{
-		IP:   net.ParseIP("10.0.0.1"),
 		Port: 9000,
 	})
 	if err != nil {
@@ -69,27 +74,27 @@ func (s *securityLevel) secondLock(m *ebpf.Map) error {
 	defer conn.Close()
 	response := make([]byte, 3) // Get map identifier
 
-	go func() {
-		conn, err := net.ListenPacket("udp", ":9001")
-		if err != nil {
-			panic(err)
-		}
-		defer conn.Close()
-		buf := make([]byte, 1024)
-		for {
-			_, addr, err := conn.ReadFrom(buf)
-			if err != nil {
-				panic(err)
-			}
-			log.Info(fmt.Sprintf("Received  %s  from  %s", string(buf), addr))
-			conn.WriteTo([]byte("Hello from UDP server"), addr)
-		}
-	}()
+	// go func() {
+	// 	conn, err := net.ListenPacket("udp", ":9000")
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	defer conn.Close()
+	// 	buf := make([]byte, 1024)
+	// 	for {
+	// 		_, addr, err := conn.ReadFrom(buf)
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
+	// 		log.Info(fmt.Sprintf("Received  %s  from  %s", string(buf), addr))
+	// 		conn.WriteTo([]byte("Hello from UDP server"), addr)
+	// 	}
+	// }()
 
 	// Attempt to send data (4 bytes) to the remote address
 	for {
 
-		_, err = conn.Write([]byte("MAP"))
+		_, err = conn.Write([]byte("MAP\n"))
 		if err != nil {
 			log.Error(fmt.Sprintf("%v", err))
 		}
@@ -97,9 +102,12 @@ func (s *securityLevel) secondLock(m *ebpf.Map) error {
 
 		_, _, err = conn.ReadFromUDP(response)
 		if err != nil {
-			log.Error(fmt.Sprintf("%v", err))
+			fmt.Println("Connect>", color.RedString("Mainframe connection failure"))
+			// log.Error(fmt.Sprintf("%v", err))
 		} else {
-			log.Info(fmt.Sprintf("%s", response))
+			if string(response) != "DAN" {
+				fmt.Println("Connect>", color.RedString("Mainframe sent incorrect response"))
+			}
 		}
 		time.Sleep(time.Second * 10)
 	}

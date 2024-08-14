@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	log "log/slog"
-	"os"
 	"time"
 
 	"github.com/cilium/ebpf"
@@ -19,6 +18,7 @@ func main() {
 	}
 
 	fmt.Print(tie) // Print the main logo
+	s := InitSecurity()
 
 	// Create our templatae map spec
 	mapSpec := ebpf.MapSpec{
@@ -27,8 +27,7 @@ func main() {
 		ValueSize:  20,
 		MaxEntries: 1, // We'll have 5 maps inside this map
 	}
-	var watchedMaps [4]*ebpf.Map  // Hold the four maps that we care about
-	var unWatchedMaps []*ebpf.Map // Hold references to maps we don't
+	var watchedMaps [4]*ebpf.Map // Hold the four maps that we care about
 
 	name, contents := create_maps(10000) // Generate unique names/contents for the maps
 	//var validMaps = map[int]bool
@@ -43,29 +42,14 @@ func main() {
 			log.Error("map create fail ")
 			panic(err)
 		}
+		defer m.Close()
 		if i < 4 { // Just grab the first four maps for now // TODO:
 			watchedMaps[i] = m
-		} else {
-			unWatchedMaps = append(unWatchedMaps, m) // This is so we keep references to all the maps (stops the )
 		}
 	}
 
 	fmt.Println("Data system>", color.GreenString("Ready"))
-
-	_, garbage := os.LookupEnv("SKIPREFRESH")
-	if !garbage {
-		// Not sure why this is needed at this time
-		fmt.Print("Data Systems> Records will be refreshed")
-		go func() {
-			//give the maps a little prod, to stop them being cleaned up
-			for i := range unWatchedMaps {
-				time.Sleep(time.Minute)
-				_ = unWatchedMaps[i].KeySize()
-			}
-		}()
-	}
 	// Start the Tie Fighter security systems
-	s := InitSecurity()
 	s.Status()
 	go func() {
 		s.keyWatch(watchedMaps)

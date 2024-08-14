@@ -38,6 +38,7 @@ type securityLevel struct {
 }
 
 func InitSecurity() *securityLevel {
+	fmt.Println("Security Status>", color.YellowString("Initialising..."))
 	fmt.Println("Security Status>", color.GreenString("Enabled"))
 	return &securityLevel{}
 }
