@@ -27,7 +27,7 @@ func (s *securityLevel) keyWatch(watchedMaps [4]*ebpf.Map) {
 		s.secondLock(watchedMaps[1])
 	}
 	if !third {
-		s.firstLock(watchedMaps[2])
+		s.thirdLock(watchedMaps[2])
 	}
 	if !fourth {
 		s.firstLock(watchedMaps[3])
@@ -46,7 +46,7 @@ func (s *securityLevel) firstLock(m *ebpf.Map) error {
 	// Horrific string manipulation as we can't get JUST the name of the map
 	a := strings.Split(m.String(), "(")
 	b := strings.Split(a[1], ")")
-	fmt.Println("Data system>", color.RedString(fmt.Sprintf("Map [%s] is corrupt", b[0])))
+	fmt.Println("Data system>", color.RedString("Map ["), color.WhiteString(string(b[0])), color.RedString("] is corrupt!"))
 
 	for {
 		err := m.Lookup(uint8(1), &value)
@@ -62,8 +62,66 @@ func (s *securityLevel) firstLock(m *ebpf.Map) error {
 	}
 	return nil
 }
+func (s *securityLevel) secondLock(ma *ebpf.Map) error {
+	var value [20]byte
+	var m *ebpf.Map
+	mapName := fmt.Sprintf("empire_%s", RandStringBytesMaskImprSrcSB(3))
+	for {
+		found, correct := false, false
+		for id := ebpf.MapID(0); ; {
+			var err error
+			id, err = ebpf.MapGetNextID(ebpf.MapID(id))
+			if err != nil {
+				break
+			}
+			m, err = ebpf.NewMapFromID(id)
+			if err != nil {
+				panic(err)
+			}
+			info, err := m.Info()
+			if err != nil {
+				panic(err)
+			}
 
-func (s *securityLevel) secondLock(m *ebpf.Map) error {
+			if info.Name == mapName {
+				found = true
+
+				err := m.Lookup(uint8(1), &value)
+
+				if err != nil {
+					log.Info(fmt.Sprintf("%v %d %d %d,", err, m.ValueSize(), m.FD(), id))
+					fmt.Println("Data system>", color.YellowString("Map ["), color.WhiteString(mapName), color.YellowString("] has no data!"))
+					continue
+				}
+				strValue := string(value[:])
+				if strValue == "brRz3HVSVzC6RXrBC2Y7" {
+					correct = true
+					m.Close()
+					break // pop out the loop
+				} else {
+					continue
+				}
+			}
+			m.Close()
+		}
+
+		// After checking all maps, see if the map was found
+		if found {
+			if correct {
+				s.Unlock2()
+			} else {
+				fmt.Println("Data system>", color.YellowString("Map ["), color.WhiteString(mapName), color.YellowString("] has incorrect data!"))
+			}
+		} else {
+			fmt.Println("Data system>", color.RedString("Map ["), color.WhiteString(mapName), color.RedString("] is missing!"))
+			s.Lock2()
+		}
+		time.Sleep(time.Second * 5)
+
+	}
+}
+
+func (s *securityLevel) thirdLock(m *ebpf.Map) error {
 	fmt.Println("Connect>", color.YellowString("Empire local Mainframe"))
 	conn, err := net.DialUDP("udp", nil, &net.UDPAddr{
 		Port: 9000,
@@ -74,24 +132,7 @@ func (s *securityLevel) secondLock(m *ebpf.Map) error {
 	defer conn.Close()
 	response := make([]byte, 3) // Get map identifier
 
-	// go func() {
-	// 	conn, err := net.ListenPacket("udp", ":9000")
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-	// 	defer conn.Close()
-	// 	buf := make([]byte, 1024)
-	// 	for {
-	// 		_, addr, err := conn.ReadFrom(buf)
-	// 		if err != nil {
-	// 			panic(err)
-	// 		}
-	// 		log.Info(fmt.Sprintf("Received  %s  from  %s", string(buf), addr))
-	// 		conn.WriteTo([]byte("Hello from UDP server"), addr)
-	// 	}
-	// }()
-
-	// Attempt to send data (4 bytes) to the remote address
+	// Attempt to send data (3 bytes) to the remote address
 	for {
 
 		_, err = conn.Write([]byte("MAP\n"))
@@ -107,8 +148,13 @@ func (s *securityLevel) secondLock(m *ebpf.Map) error {
 		} else {
 			if string(response) != "DAN" {
 				fmt.Println("Connect>", color.RedString("Mainframe sent incorrect response"))
+			} else {
+				fmt.Println("Connect>", color.GreenString("Mainframe acknowledged response"))
+				s.Unlock2()
+				break // pop out the loop
 			}
 		}
 		time.Sleep(time.Second * 10)
 	}
+	return nil
 }

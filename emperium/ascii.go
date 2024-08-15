@@ -52,7 +52,7 @@ func (s *securityLevel) lock1Status() {
 }
 
 func (s *securityLevel) lock2Status() {
-	if s.lock1 {
+	if s.lock2 {
 		fmt.Println("Security Lock 2> ", color.WhiteString("["), color.RedString("▮"), color.WhiteString("]"))
 	} else {
 		fmt.Println("Security Lock 2> ", color.WhiteString("["), color.GreenString("▮"), color.WhiteString("]"))
@@ -60,14 +60,14 @@ func (s *securityLevel) lock2Status() {
 }
 
 func (s *securityLevel) lock3Status() {
-	if s.lock1 {
+	if s.lock3 {
 		fmt.Println("Security Lock 3> ", color.WhiteString("["), color.RedString("▮"), color.WhiteString("]"))
 	} else {
 		fmt.Println("Security Lock 3> ", color.WhiteString("["), color.GreenString("▮"), color.WhiteString("]"))
 	}
 }
 func (s *securityLevel) lock4Status() {
-	if s.lock1 {
+	if s.lock4 {
 		fmt.Println("Security Lock 4> ", color.WhiteString("["), color.RedString("▮"), color.WhiteString("]"))
 	} else {
 		fmt.Println("Security Lock 4> ", color.WhiteString("["), color.GreenString("▮"), color.WhiteString("]"))
@@ -84,4 +84,18 @@ func (s *securityLevel) Status() {
 func (s *securityLevel) Unlock1() {
 	s.lock1 = true
 	s.lock1Status()
+}
+
+func (s *securityLevel) Unlock2() {
+	if !s.lock2 {
+		s.lock2 = true
+		s.lock2Status()
+	}
+}
+
+func (s *securityLevel) Lock2() {
+	if s.lock2 {
+		s.lock2 = false
+		s.lock2Status()
+	}
 }

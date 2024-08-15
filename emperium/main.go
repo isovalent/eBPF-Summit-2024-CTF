@@ -29,7 +29,7 @@ func main() {
 	}
 	var watchedMaps [4]*ebpf.Map // Hold the four maps that we care about
 
-	name, contents := create_maps(10000) // Generate unique names/contents for the maps
+	name, contents := create_maps(1000) // Generate unique names/contents for the maps
 	//var validMaps = map[int]bool
 	// Lets create many maps
 	for i := range name {
@@ -55,5 +55,5 @@ func main() {
 		s.keyWatch(watchedMaps)
 	}()
 
-	time.Sleep(time.Minute * 5)
+	time.Sleep(time.Minute * 30)
 }

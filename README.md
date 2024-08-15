@@ -55,6 +55,6 @@ Clues:
 
 - A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it.
 
-- Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `sdfsdf`, we're not sure if this will impact the running `emperium` system.
+- Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system.
 
 - A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to answer the `emperium` system.

@@ -10,8 +10,10 @@
 
 char __license[] SEC("license") = "GPL";
 
+// TC Return codes
 #define TC_ACT_OK 0
 #define TC_ACT_SHOT 2
+
 #define ETH_P_IP 0x0800 /* Internet Protocol packet */
 #define ETH_HLEN 14     /*Ethernet Header Length */
 #define ETH_ALEN 6
@@ -19,9 +21,12 @@ char __license[] SEC("license") = "GPL";
 #define IP_SRC_OFF (ETH_HLEN + offsetof(struct iphdr, saddr))
 #define IP_DST_OFF (ETH_HLEN + offsetof(struct iphdr, daddr))
 
-static inline int read_dns(struct __sk_buff *skb) {
+static inline int swap_udp(struct __sk_buff *skb) {
+  // Get pointers to the beginning and end
   void *data_end = (void *)(long)skb->data_end;
   void *data = (void *)(long)skb->data;
+
+  // Point to ethernet header
   struct ethhdr *eth = data;
   __u16 h_proto;
   __u64 nh_off = 0;
@@ -31,17 +36,21 @@ static inline int read_dns(struct __sk_buff *skb) {
     return TC_ACT_OK;
   }
 
+  // Get protocol
   h_proto = eth->h_proto;
 
+  // if it is IP continue
   if (h_proto == bpf_htons(ETH_P_IP)) {
     struct iphdr *iph = data + nh_off;
 
+    // Get pointer to IP Header
     if ((void *)(iph + 1) > data_end) {
-      return 0;
+      return TC_ACT_OK;
     }
 
+    // Check protocol inside IP packet
     if (iph->protocol != IPPROTO_UDP) {
-      return 0;
+      return TC_ACT_OK;
     }
     __u32 ip_hlen = 0;
     //__u32 poffset = 0;
@@ -51,18 +60,19 @@ static inline int read_dns(struct __sk_buff *skb) {
     ip_hlen = iph->ihl << 2;
 
     if (ip_hlen < sizeof(*iph)) {
-      return 0;
+      return TC_ACT_OK;
     }
     struct udphdr *udph = data + nh_off + sizeof(*iph);
 
     if ((void *)(udph + 1) > data_end) {
-      return 0;
+      return TC_ACT_OK;
     }
     __u16 src_port = bpf_ntohs(udph->source);
     __u16 dst_port = bpf_ntohs(udph->dest);
-    bpf_printk("UDP %d %d", src_port, dst_port);
 
+    // Is the destination port the correct one?
     if (dst_port == 9000) {
+      bpf_printk("UDP %d %d", src_port, dst_port);
 
       u32 payload_offset = sizeof(*eth) + sizeof(*iph) + sizeof(*udph);
       u32 payload_length = iph->tot_len - (sizeof(*iph) + sizeof(*udph));
@@ -80,18 +90,6 @@ static inline int read_dns(struct __sk_buff *skb) {
       data[3] = '\0'; // null terminate the string
       bpf_printk("data: %s", data);
 
-      // uint8_t data2[1];
-      //  data2[0] = 'A';
-      //   if (sizeof(data) != 0) {
-      // u32 data_offset = sizeof(*eth) + sizeof(*iph) + sizeof(*udph);
-
-      // ret = bpf_skb_store_bytes(skb, data_offset, &data, sizeof(data),
-      //                           BPF_F_RECOMPUTE_CSUM);
-      // if (ret) {
-      //   bpf_printk("error");
-      //   return TC_ACT_OK;
-      // }
-      // }
       /* We'll store the mac addresses (L2) */
       __u8 src_mac[ETH_ALEN];
       __u8 dst_mac[ETH_ALEN];
@@ -102,20 +100,10 @@ static inline int read_dns(struct __sk_buff *skb) {
       __be32 src_ip = iph->saddr;
       __be32 dst_ip = iph->daddr;
 
-      // bpf_printk("FROM: %d...%d", src_ip & 0xff, src_ip >> 24);
-
-      //   // ignore private ip ranges 10.0.0.0/8, 127.0.0.0/8, 172.16.0.0/12,
-      //   // 192.168.0.0/16
-      //   if ((src_ip & 0xff) == 10 || ((src_ip & 0xff) == 127) ||
-      //       (src_ip & 0xf0ff) == 0x10ac || (src_ip & 0xffff) == 0xa8c0 ||
-      //       (dst_ip & 0xff) == 10 || ((dst_ip & 0xff) == 127) ||
-      //       (dst_ip & 0xf0ff) == 0x10ac || (dst_ip & 0xffff) == 0xa8c0)
-      //     return TC_ACT_UNSPEC;
-
       /* and source/destination ports (L4) */
       __be16 dest_port = udph->dest;
       __be16 src_port = udph->source;
-      // dest_port = bpf_htons(9001);
+
       /* and then swap them all */
 
       /* Swap the mac addresses */
@@ -148,6 +136,8 @@ static inline int read_dns(struct __sk_buff *skb) {
       u32 data_offset = sizeof(*eth) + sizeof(*iph) + sizeof(*udph);
 
       data[0] = 'D';
+      data[2] = 'N';
+
       ret = bpf_skb_store_bytes(skb, data_offset, &data, sizeof(data),
                                 BPF_F_RECOMPUTE_CSUM);
 
@@ -167,7 +157,7 @@ static inline int read_dns(struct __sk_buff *skb) {
 
 // eBPF hooks - This is where the magic happens!
 SEC("tc_in")
-int tc_ingress(struct __sk_buff *skb) { return read_dns(skb); }
+int tc_ingress(struct __sk_buff *skb) { return swap_udp(skb); }
 
 SEC("tc_egress")
-int tc_egress_(struct __sk_buff *skb) { return read_dns(skb); }
+int tc_egress_(struct __sk_buff *skb) { return swap_udp(skb); }
