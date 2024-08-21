@@ -27,7 +27,7 @@ This will connect to the running system and start `emperium`.
 
 `limactl shell ctf sudo /tmp/emperium`
 
-### Second shell
+### Second shell
 
 The following line will connect through to the VM using SSH, it will also port forward from inside the VM (port 80) to port `8082` on your local machine. The reason for this is to allow the use of code-server to interact with the `eBPF` 🐝 code.
 
