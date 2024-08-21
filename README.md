@@ -75,4 +75,4 @@ Clues:
 
 - Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system.
 
-- A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to answer the `emperium` system.
+- A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to "acknowledge" the `emperium` system.
