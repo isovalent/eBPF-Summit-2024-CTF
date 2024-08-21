@@ -19,6 +19,9 @@ containerd:
   system: false
   user: false
 
+mounts:
+- location: "~"
+
 provision:
 - mode: system
   script: |
