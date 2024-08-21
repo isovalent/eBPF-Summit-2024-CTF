@@ -1,0 +1,42 @@
+# This template requires Lima v0.7.0 or later.
+images:
+# Try to use release-yyyyMMdd image if available. Note that release-yyyyMMdd will be removed after several months.
+- location: "https://cloud-images.ubuntu.com/releases/24.04/release-20240725/ubuntu-24.04-server-cloudimg-amd64.img"
+  arch: "x86_64"
+  digest: "sha256:d2377667ea95222330ca2287817403c85178dad397e9fed768a9b4aec79d2a7f"
+- location: "https://cloud-images.ubuntu.com/releases/24.04/release-20240725/ubuntu-24.04-server-cloudimg-arm64.img"
+  arch: "aarch64"
+  digest: "sha256:2c47dbf04477993ebcd921250b1aab8e582d2fdd03d7576b57d28b6aeeff1427"
+# Fallback to the latest release image.
+# Hint: run `limactl prune` to invalidate the cache
+- location: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img"
+  arch: "x86_64"
+- location: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img"
+  arch: "aarch64"
+
+  # containerd is managed by k3s, not by Lima, so the values are set to false here.
+containerd:
+  system: false
+  user: false
+
+provision:
+- mode: system
+  script: |
+    #!/bin/sh
+    sudo apt-get update; sudo apt-get install -y linux-tools-$(uname -r) libbpf-dev clang vim golang-go git
+    sudo curl -L https://github.com/thebsdbox/emperium/raw/main/bin/emperium-$(uname -m) > /tmp/emperium && chmod +x /tmp/emperium
+- mode: user
+  script: |
+    #!/bin/sh
+    curl -fsSL https://code-server.dev/install.sh | sh
+probes:
+- script: |
+    #!/bin/bash
+message: |
+  Welcome to the eBPF Summit 2024 !!
+  ------
+  You can connect to your running instance with the command:
+  lima shell ctf sudo /tmp/emperium
+
+  Start code-server with $ PASSWORD=password code-server --bind-addr=0.0.0.0
+  ------

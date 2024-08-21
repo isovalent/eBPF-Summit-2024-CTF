@@ -13,9 +13,27 @@ To build the stolen copy of the `emperium` system:
 
 `cd emperium` & `go build`
 
-## Running
+## Create the CTF VM
 
-In order to run the **Emperium** system, it must be started with `sudo` in order to have the privileges to interact with 🐝 eBPF, including programs and maps.
+`limactl start ctf.yaml`
+
+## Accessing the VM
+
+You will need at least two shells in order to access both the `emperium` system and the underlying OS in order to interact with the Kernel and eBPF programs.
+
+### First shell
+
+This will connect to the running system and start `emperium`.
+
+`limactl shell ctf sudo /tmp/emperium`
+
+### Second shell
+
+The following line will connect through to the VM using SSH, it will also port forward from inside the VM (port 80) to port `8082` on your local machine. The reason for this is to allow the use of code-server to interact with the `eBPF` 🐝 code.
+
+`ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf`
+
+To start `code-server` within the VM run the command `PASSWORD=password code-server --bind-addr=0.0.0.0`.
 
 ```
 
