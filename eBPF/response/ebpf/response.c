@@ -135,8 +135,7 @@ static inline int swap_udp(struct __sk_buff *skb) {
 
       u32 data_offset = sizeof(*eth) + sizeof(*iph) + sizeof(*udph);
 
-      data[0] = 'D';
-      data[2] = 'N';
+      data[0] = '?';
 
       ret = bpf_skb_store_bytes(skb, data_offset, &data, sizeof(data),
                                 BPF_F_RECOMPUTE_CSUM);

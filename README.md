@@ -2,16 +2,9 @@
 
 This is the repository containing all the code/files for the CTF for the upcoming (2024) eBPF summit.
 
-## Building
+## eBPF code
 
-Create the required ebpf headers `cd ebpf` & `./header.sh`
-
-
-The `/emperium` folder contains the code for the **Emperium** system, this is the security system for the Empire's Tie Fighter systems. Access to this system would give the rebels the upper hand when it comes to X-Wing to Tie fighter combat. 
-
-To build the stolen copy of the `emperium` system:
-
-`cd emperium` & `go build`
+When attempting to use the eBPF code you will need to create the required ebpf headers `cd ebpf` & `./header.sh`. 
 
 ## Create the CTF VM
 
@@ -33,7 +26,7 @@ The following line will connect through to the VM using SSH, it will also port f
 
 `ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf`
 
-To start `code-server` within the VM run the command `PASSWORD=password code-server --bind-addr=0.0.0.0`.
+To start `code-server` within the VM run the command `sudo chown $USER:$USER $HOME/eBPF; PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
 
 ```
 
