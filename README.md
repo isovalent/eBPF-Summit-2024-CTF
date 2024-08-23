@@ -20,14 +20,6 @@ This will connect to the running system and start `emperium`.
 
 `limactl shell ctf sudo /tmp/emperium`
 
-### Second shell
-
-The following line will connect through to the VM using SSH, it will also port forward from inside the VM (port 80) to port `8082` on your local machine. The reason for this is to allow the use of code-server to interact with the `eBPF` 🐝 code.
-
-`ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf`
-
-To start `code-server` within the VM run the command `sudo chown $USER:$USER $HOME/eBPF; PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
-
 ```
 
              ._,.
@@ -57,8 +49,19 @@ Security Status> Enabled
 Security Lock 1>  [ ▮ ]
 Security Lock 2>  [ ▮ ]
 Security Lock 3>  [ ▮ ]
-Security Lock 4>  [ ▮ ]
 ```
+
+### Second shell
+
+The following line will connect through to the VM using SSH, it will also port forward from inside the VM (port 80) to port `8082` on your local machine. The reason for this is to allow the use of code-server to interact with the `eBPF` 🐝 code.
+
+`ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf`
+
+To start `code-server` within the VM run the command `sudo chown $USER:$USER $HOME/eBPF; PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
+
+### Code-Server or Vim
+
+To make life as easy as possible we've packaged both Vim and Code-server for you to create and modify Go and eBPF code. To connect to code-server open a browser and point it to the IP address of the host where the `lima` VM is running (not the CTF VM IP, the IP of the hosting machine itself). Connecting to port `8082` will open code-server that will allow you to work inside the CTF VM. The CTF source code is in your home directory!
 
 ## Notes:
 
