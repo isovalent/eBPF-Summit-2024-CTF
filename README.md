@@ -70,12 +70,15 @@ Clues:
 <summary>Clues</summary>
 <details>
 <summary>First Clue</summary>
+  
   `bpftool` can be used to list all of the maps
 <details>
 <summary>Second Clue</summary>
+  
   `bpftool` can dump the contents of a specific map **ID**
 <details>
 <summary>Final Clue</summary>
+  
   `bpftool` can update the contents of the specific key/value within a map.
 </details>
 </details>
@@ -84,4 +87,19 @@ Clues:
 
 - Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system.
 
+<details>
+<summary>Clues</summary>
+<details>
+<summary>First Clue</summary>
+  
+  Partially completed code should help you achieve this, you'll need to look at an existing map to understand the key/values
+<details>
+<summary>Second Clue</summary>
+  
+  An `eBPF` map will only exist as long as a program has a reference too it, otherwise it will be garbage collected.
+</details>
+</details>
+</details>
+
 - A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to "acknowledge" the `emperium` system.
+
