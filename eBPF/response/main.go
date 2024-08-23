@@ -24,10 +24,7 @@ import (
 
 func main() {
 
-	ifaceName := flag.String("interface", "eth0", "The interface to watch network traffic on")
-	// findName := flag.String("findDomain", "", "The domain to watch for")
-	// replaceRecord := flag.String("replaceRecord", "", "The A record to replace for that particular domain")
-
+	ifaceName := flag.String("interface", "lo", "The interface to watch network traffic on")
 	flag.Parse()
 
 	log.Infof("Starting 🐝 the eBPF DNS watcher, on interface [%s]", *ifaceName)
@@ -51,23 +48,6 @@ func main() {
 	}
 
 	defer objs.Close()
-	// Parse the URL Path
-	// var dnsName [256]uint8
-	// var convertedName [256]uint8
-
-	// copy(dnsName[:], *findName)
-
-	// if *findName != "" || *replaceRecord != "" {
-
-	// 	address, _ := ipconv.IPv4ToInt(net.ParseIP(*replaceRecord))
-	// 	tempName := ConvertDomain(*findName)
-	// 	copy(convertedName[:], tempName)
-	// 	err = objs.DnsMap.Put(convertedName, dnsDnsReplace{dnsName, HostToNetLong(address)})
-	// 	if err != nil {
-	// 		log.Fatalf("add to map failed %v", err)
-	// 	}
-	// }
-
 	qdisc := &netlink.GenericQdisc{
 		QdiscAttrs: netlink.QdiscAttrs{
 			LinkIndex: devID.Index,
@@ -181,25 +161,4 @@ func cat() {
 	}
 	defer file.Close()
 	readLines(file)
-}
-
-// HostToNetLong converts a 32-bit integer from host to network byte order, aka "htonl"
-func HostToNetLong(i uint32) uint32 {
-	b := make([]byte, 4)
-	binary.LittleEndian.PutUint32(b, i)
-	return binary.BigEndian.Uint32(b)
-}
-
-func ConvertDomain(name string) []byte {
-	var convertedName []byte
-	//var charCount uint8
-	var charPointer int
-	subDomains := strings.Split(name, ".")
-	for x := range subDomains {
-		convertedName = append(convertedName, uint8(len(subDomains[x])))
-		convertedName = append(convertedName, subDomains[x]...)
-		charPointer = charPointer + 1 + len(subDomains[x])
-	}
-	//convertedName = append(convertedName, uint8(0))
-	return convertedName
 }
