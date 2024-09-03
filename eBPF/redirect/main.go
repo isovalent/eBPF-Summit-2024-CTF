@@ -12,40 +12,42 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/cilium/ebpf"
 	log "github.com/sirupsen/logrus"
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
+
+	"github.com/cilium/ebpf"
 )
 
-//go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc clang -cflags "-O2 -g -Wall -Werror" udp ./ebpf/response.c -- -I../../headers
+//go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc clang -cflags "-O2 -g -Wall -Werror" redirect ./ebpf/redirect.c -- -I../../headers
 
 func main() {
 
 	ifaceName := flag.String("interface", "lo", "The interface to watch network traffic on")
+
 	flag.Parse()
 
-	log.Infof("Starting 🐝 the eBPF UDP watcher, on interface [%s]", *ifaceName)
+	log.Info("Starting 🐝 the eBPF redirecter, on interface [%s]", *ifaceName)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	// Look up the network interface by name.
 	devID, err := net.InterfaceByName(*ifaceName)
 	if err != nil {
-		log.Fatalf("lookup network iface %s: %s", *ifaceName, err)
+		panic(fmt.Sprintf("lookup network iface %s: %s", *ifaceName, err))
 	}
 
-	// Load pre-compiled programs into the kernel.
-	objs := udpObjects{}
-	if err := loadUdpObjects(&objs, nil); err != nil {
+	objs := redirectObjects{}
+
+	if err := loadRedirectObjects(&objs, nil); err != nil {
 		var verr *ebpf.VerifierError
 		if errors.As(err, &verr) {
 			fmt.Printf("%+v\n", verr)
 		}
 		log.Fatalf("loading objects: %s", err)
 	}
-
 	defer objs.Close()
+
 	qdisc := &netlink.GenericQdisc{
 		QdiscAttrs: netlink.QdiscAttrs{
 			LinkIndex: devID.Index,
@@ -98,6 +100,7 @@ func main() {
 	// Drop the logs
 	go cat()
 	<-ctx.Done() // We wait here
+
 	log.Info("Removing eBPF programs")
 
 	link, err := netlink.LinkByName(*ifaceName)
@@ -135,7 +138,6 @@ func main() {
 		}
 	}
 }
-
 func readLines(r io.Reader) {
 	rd := bufio.NewReader(r)
 	for {
