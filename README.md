@@ -88,13 +88,9 @@ The rebels have found access to the Sienar Fleet Systems, the tie fighter manufa
 
 Each of the security locks presents a different challenge, some may involve modifying an eBPF map and others may involve fixing some code in order to modify some networking to trick the mainframe into unlocking.
 
-### Clues:
+### Part 1 - unscramble the message 
+A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it.
 
-
-- A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it.
-
-<details>
-<summary>Clues</summary>
 <details>
 <summary>First Clue</summary>
   
@@ -102,7 +98,7 @@ Each of the security locks presents a different challenge, some may involve modi
 <details>
 <summary>Second Clue</summary>
   
-  `bpftool` can dump the contents of a specific map **ID**
+  `bpftool` can dump the contents of a specific map identified by name or ID
 <details>
 <summary>Final Clue</summary>
   
@@ -110,48 +106,56 @@ Each of the security locks presents a different challenge, some may involve modi
 </details>
 </details>
 </details>
-</details>
 
-- Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system. 📂`eBPF/map` (or perhaps this can be done with `bpftool` 🤔)
+### Part 2 - complete the keycodes
+Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system. 📂`eBPF/map` (or perhaps this can be done with `bpftool` 🤔)
 
-<details>
-<summary>Clues</summary>
 <details>
 <summary>First Clue</summary>
   
-  Partially completed code should help you achieve this, you'll need to look at an existing map to understand the key/values
+  Partially completed code is one way to help you achieve this, you'll need to look at an existing map to understand the key/values
 <details>
 <summary>Second Clue</summary>
   
-  An `eBPF` map will only exist as long as a program has a reference too it, otherwise it will be garbage collected.
-</details>
+  An `eBPF` map will only exist as long as a program or file has a reference too it, otherwise it will be garbage collected.
 </details>
 </details>
 
-- An archive taken from a stolen ship has revealed the third security lock is broken due to the authentication being pushed to the wrong port. One of the engineers has managed to put something together, but keeps muttering about "Endianness" and returning traffic. 📂`eBPF/response/`
+### Part 3 - get authenticated  
+ An archive taken from a stolen ship has revealed the third security lock is broken due to the authentication being pushed to the wrong port. One of the engineers has managed to put something together, but keeps muttering about "Endianness" and returning traffic. 📂`eBPF/redirect/`
 
-<details>
-<summary>Clues</summary>
 <details>
 <summary>First Clue</summary>
   
-  In most cases numbers are when networking are defined to always be big-endian, which may differ from the host byte order on a particular machine. So often you may need to convery between a host byte order and network byte order. Their are bpf helper functions that will allow you to convert between the two.
+  Is something generating network traffic on the `lo` interface? 
+<details>
+<summary>Second Clue</summary>
+  
+  In most cases, numbers are carried in network packets in [big-endian](https://en.wikipedia.org/wiki/Endianness#/media/File:32bit-Endianess.svg) byte order, which may differ from the host byte order on a particular machine. So often you may need to convert between host byte order and network byte order. There are bpf helper functions that will allow you to convert between the two.
+  
+<details>
+<summary>Third Clue</summary>
+  
+  Changing a destination port will effectively change where traffic is being sent to, although it may confuse the networking stack to suddenly receive a reply to a port that it wasn't expecting...
+</details>
+</details>
+</details>
+  
+### Part 4 - access the mainframe 
+ A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to **"acknowledge"** the `emperium` system. The specialist that wrote most of this was reassigned after breaking his keyboard about a "verifier"? 📂`eBPF/response/`
+
+<details>
+<summary>First Clue</summary>
+  
+You'll need to modify the partially-complete code so that it passes the eBPF Verifier
   
 <details>
 <summary>Second Clue</summary>
   
-  Changing a destination port will effectively change where traffic is being sent to, although it may confuse the networking stack to suddently recieve a reply to a port that it wasn't expecting...
-<details>
-<summary>Final Clue</summary>
-  
-  `tbd`
+There are BPF helper functions for reading bytes out of the kernel's network packet data structure (a.k.a. `skb`) as well as for storing bytes in it. 
 </details>
 </details>
-</details>
-</details>
-  
-- A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to **"acknowledge"** the `emperium` system. The specialist that wrote most of this was reassigned after breaking his keyboard about a "verifier"? 📂`eBPF/redirect/`
 
 ## Additional
 
-You can also run the program locally (with root priviliges) if you don't want to use lima, it will attempt to write the source code to a `eBPF` folder so ensure one doesn't exist in the directory you run the `/emperium` program.
+You can also run the `/emperium` program locally (with root privileges) on a Linux machine if you don't want to use lima. It will attempt to write the source code to a `eBPF` folder so ensure one doesn't exist in the directory you run the `/emperium` program.
