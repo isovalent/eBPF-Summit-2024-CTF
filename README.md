@@ -1,12 +1,18 @@
 # ebpf Summit 2024 Capture the Flag ⛳️🐝 
 
-This is the repository containing all the code/files for the CTF for the upcoming (2024) eBPF summit.
+Welcome to the eBPF 2024 Summit CTF, this year the task will involve a number of challenges around various eBPF technologies. Some of the challenges will require use of CLI tools such as `bpftool` and some will require fixing or completing some partial code in order to complete the challenge.
 
-## eBPF code
+## Getting the CTF up and running !
 
-When attempting to use the eBPF code you will need to create the required ebpf headers `cd ebpf` & `./header.sh`. 
+The CTF makes use of the [lima](https://github.com/lima-vm/lima) project to simplify the process of creating a virtual machine that will run the CTF. The virtual machine once created will contain:
+
+- CTF program
+- code-server (VS-CODE but accessed through a browser)
+- vim
+- a `~/ebpf` directory that is filled with the sample code for the challenges
 
 ## Create the CTF VM
+You will need to take the `ctf.yaml` in this repository and start it with `limactl`, this will build and start the virtual machine!
 
 `limactl start ctf.yaml`
 
@@ -57,17 +63,28 @@ The following line will connect through to the VM using SSH, it will also port f
 
 `ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf`
 
-To start `code-server` within the VM run the command `sudo chown $USER:$USER $HOME/eBPF; PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
+To start `code-server` within the VM run the command `PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
+
+## Setting up the eBPF code
+
+When attempting to use the eBPF code you will need to create the required ebpf headers `cd ebpf` & `./header.sh`. 
 
 ### Code-Server or Vim
 
 To make life as easy as possible we've packaged both Vim and Code-server for you to create and modify Go and eBPF code. To connect to code-server open a browser and point it to the IP address of the host where the `lima` VM is running (not the CTF VM IP, the IP of the hosting machine itself). Connecting to port `8082` will open code-server that will allow you to work inside the CTF VM. The CTF source code is in your home directory!
 
-## Notes:
 
-Clues:
+## The challenge !
 
-- A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it.
+`TBD` 
+The rebels have found access to the Sienar Fleet Systems, the tie fighter manufacturing mainframe. We believe that if we can get through all of the security locks that we will find the code that will allow us to disable the entire fleet !
+
+Each of the security locks presents a different challenge, some may involve modifying an eBPF map and others may involve fixing some code in order to modify some networking to trick the mainframe into unlocking.
+
+### Clues:
+
+
+- A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it. `/map`
 
 <details>
 <summary>Clues</summary>
@@ -88,7 +105,7 @@ Clues:
 </details>
 </details>
 
-- Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system.
+- Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system. `/map` (or perhaps this can be done with `bpftool` 🤔)
 
 <details>
 <summary>Clues</summary>
@@ -104,5 +121,10 @@ Clues:
 </details>
 </details>
 
-- A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to "acknowledge" the `emperium` system.
+- An archive taken from a stolen ship has revealed the third security lock is broken due to the authentication being pushed to the wrong port. One of the engineers has managed to put something together, but keeps muttering about "Endianness" and return ports. `/response/`
+  
+- A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to **"acknowledge"** the `emperium` system. The specialist that wrote most of this was reassigned after breaking his keyboard about a "verifier"? `/redirect/`
 
+## Additional
+
+You can also run the program locally (with root priviliges) if you don't want to use lima, it will attempt to write the source code to a `eBPF` folder so ensure one doesn't exist in the directory you run the `/emperium` program.
