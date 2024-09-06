@@ -90,6 +90,15 @@ static inline int swap_udp(struct __sk_buff *skb) {
       data[3] = '\0'; // null terminate the string
       bpf_printk("data: %s", data);
 
+      u32 data_offset = sizeof(*eth) + sizeof(*iph) + sizeof(*udph);
+
+      data[0] = '?';
+
+      ret = bpf_skb_store_bytes(skb, data_offset, &data, sizeof(data),
+                                BPF_F_RECOMPUTE_CSUM);
+
+      // Something doesn't seem right
+
       /* We'll store the mac addresses (L2) */
       __u8 src_mac[ETH_ALEN];
       __u8 dst_mac[ETH_ALEN];
@@ -132,13 +141,6 @@ static inline int swap_udp(struct __sk_buff *skb) {
                           sizeof(struct ethhdr) + sizeof(struct iphdr) +
                               offsetof(struct udphdr, dest),
                           &src_port, sizeof(src_port), 0);
-
-      u32 data_offset = sizeof(*eth) + sizeof(*iph) + sizeof(*udph);
-
-      data[0] = '?';
-
-      ret = bpf_skb_store_bytes(skb, data_offset, &data, sizeof(data),
-                                BPF_F_RECOMPUTE_CSUM);
 
       /* And then send it back from wherever it's come from */
       ret = bpf_clone_redirect(skb, skb->ifindex, 0);
