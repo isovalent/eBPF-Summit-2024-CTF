@@ -91,7 +91,7 @@ static inline int redirect_tcp(struct __sk_buff *skb, bool ingress) {
       //
     }
   }
-}
+
 
 /*
 15:27:27.195146 IP (tos 0x0, ttl 64, id 64035, offset 0, flags [DF], proto TCP
