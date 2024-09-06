@@ -43,7 +43,7 @@ message: |
   limactl shell ctf sudo /tmp/emperium
 
   In another terminal connect with
-  ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf
+  ssh -F $HOME/.lima/ctf/ssh.config -L "*:8082:0.0.0.0:80" lima-ctf
 
   Start code-server with $ PASSWORD=password code-server --bind-addr=0.0.0.0
   ------
