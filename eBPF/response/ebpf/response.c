@@ -4,7 +4,6 @@
 #include <bpf/bpf_endian.h>
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
-#include <string.h>
 
 #pragma pack(1)
 
@@ -102,8 +101,8 @@ static inline int swap_udp(struct __sk_buff *skb) {
       /* We'll store the mac addresses (L2) */
       __u8 src_mac[ETH_ALEN];
       __u8 dst_mac[ETH_ALEN];
-      memcpy(src_mac, eth->h_source, ETH_ALEN);
-      memcpy(dst_mac, eth->h_dest, ETH_ALEN);
+      __builtin_memcpy(src_mac, eth->h_source, ETH_ALEN);
+      __builtin_memcpy(dst_mac, eth->h_dest, ETH_ALEN);
 
       /* ip addresses (L3) */
       __be32 src_ip = iph->saddr;
