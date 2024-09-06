@@ -124,7 +124,27 @@ Each of the security locks presents a different challenge, some may involve modi
 </details>
 </details>
 
-- An archive taken from a stolen ship has revealed the third security lock is broken due to the authentication being pushed to the wrong port. One of the engineers has managed to put something together, but keeps muttering about "Endianness" and return ports. 📂`eBPF/response/`
+- An archive taken from a stolen ship has revealed the third security lock is broken due to the authentication being pushed to the wrong port. One of the engineers has managed to put something together, but keeps muttering about "Endianness" and returning traffic. 📂`eBPF/response/`
+
+<details>
+<summary>Clues</summary>
+<details>
+<summary>First Clue</summary>
+  
+  In most cases numbers are when networking are defined to always be big-endian, which may differ from the host byte order on a particular machine. So often you may need to convery between a host byte order and network byte order. Their are bpf helper functions that will allow you to convert between the two.
+  
+<details>
+<summary>Second Clue</summary>
+  
+  Changing a destination port will effectively change where traffic is being sent to, although it may confuse the networking stack to suddently recieve a reply to a port that it wasn't expecting...
+<details>
+<summary>Final Clue</summary>
+  
+  `tbd`
+</details>
+</details>
+</details>
+</details>
   
 - A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to **"acknowledge"** the `emperium` system. The specialist that wrote most of this was reassigned after breaking his keyboard about a "verifier"? 📂`eBPF/redirect/`
 
