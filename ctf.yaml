@@ -19,8 +19,9 @@ containerd:
   system: false
   user: false
 
-mounts:
-- location: "~"
+### In case you wish to mount your home directory
+# mounts:
+#- location: "~"
 
 provision:
 - mode: system
