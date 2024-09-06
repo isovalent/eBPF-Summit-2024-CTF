@@ -63,7 +63,11 @@ The following line will connect through to the VM using SSH, it will also port f
 
 `ssh -F $HOME/.lima/ctf/ssh.config -L "*:8082:0.0.0.0:80" lima-ctf`
 
-To start `code-server` within the VM run the command `PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
+To start `code-server` within the VM run the command: 
+
+`PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
+
+**Additionally**: You may find it makes things a little easier to install some plugins to make things easier, such as the `clangd` extension or the `golang` extension.
 
 ## Setting up the eBPF code
 
