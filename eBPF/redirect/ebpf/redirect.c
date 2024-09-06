@@ -74,9 +74,12 @@ static inline int redirect_tcp(struct __sk_buff *skb, bool ingress) {
     __u16 source = tcp.source;
     __u16 dest = tcp.dest;
 
+    // Print out any traffic we might be interested in
+    if (source > 1024 && dest > 1024) {
     bpf_printk("ingress:%s source: %d -> destination %d",
                ingress ? "true" : "false", source, dest);
-
+    }
+    
     if (ingress) {
       if (dest == 2001) {
         tcp.dest = 2000;
@@ -90,8 +93,9 @@ static inline int redirect_tcp(struct __sk_buff *skb, bool ingress) {
     } else {
       // something is missing here
     }
-  }
+  
 
+    // The Rebel engineer left some TCP dump output, might help, might be a read herring
   /*
   15:27:27.195146 IP (tos 0x0, ttl 64, id 64035, offset 0, flags [DF], proto TCP
   (6), length 60) 127.0.0.1.55590 > 127.0.0.1.2001: Flags [S], cksum 0xfe30
