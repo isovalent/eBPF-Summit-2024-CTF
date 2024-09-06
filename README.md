@@ -73,6 +73,9 @@ All of the code lives within `~/eBPF` and is automatically created when you star
 
 To make life as easy as possible we've packaged both Vim and Code-server for you to create and modify Go and eBPF code. To connect to code-server open a browser and point it to the IP address of the host where the `lima` VM is running (not the CTF VM IP, the IP of the hosting machine itself). Connecting to port `8082` will open code-server that will allow you to work inside the CTF VM. The CTF source code is in your home directory!
 
+### Compiling the code
+
+In each of the folders in `~/eBPF` is some half completed eBPF 🐝 programs. Most of the programs will require running `go generate` in order to compile the C/eBPF source code first before you can run the main go binary. Additionally to run the go programs themselves the easiest approach is to either `go build` and run the resulting binary with `sudo` or the do `go run -exec sudo .`.
 
 ## The challenge !
 
