@@ -76,10 +76,10 @@ static inline int redirect_tcp(struct __sk_buff *skb, bool ingress) {
 
     // Print out any traffic we might be interested in
     if (source > 1024 && dest > 1024) {
-    bpf_printk("ingress:%s source: %d -> destination %d",
-               ingress ? "true" : "false", source, dest);
+      bpf_printk("ingress:%s source: %d -> destination %d",
+                 ingress ? "true" : "false", source, dest);
     }
-    
+
     if (ingress) {
       if (dest == 2001) {
         tcp.dest = 2000;
@@ -93,34 +93,34 @@ static inline int redirect_tcp(struct __sk_buff *skb, bool ingress) {
     } else {
       // something is missing here
     }
-  
 
-    // The Rebel engineer left some TCP dump output, might help, might be a read herring
-  /*
-  15:27:27.195146 IP (tos 0x0, ttl 64, id 64035, offset 0, flags [DF], proto TCP
-  (6), length 60) 127.0.0.1.55590 > 127.0.0.1.2001: Flags [S], cksum 0xfe30
-  (incorrect -> 0xde8f), seq 1127217463, win 65495, options [mss 65495,sackOK,TS
-  val 1342243858 ecr 0,nop,wscale 7], length 0 15:27:27.195160 IP (tos 0x0, ttl
-  64, id 0, offset 0, flags [DF], proto TCP (6), length 40) 127.0.0.1.2001 >
-  127.0.0.1.55590: Flags [R.], cksum 0x946e (correct), seq 0, ack 1127217464,
-  win 0, length 0
+    // The Rebel engineer left some TCP dump output, might help, might be a read
+    // herring
+    /*
+    15:27:27.195146 IP (tos 0x0, ttl 64, id 64035, offset 0, flags [DF], proto
+    TCP (6), length 60) 127.0.0.1.55590 > 127.0.0.1.2001: Flags [S], cksum
+    0xfe30 (incorrect -> 0xde8f), seq 1127217463, win 65495, options [mss
+    65495,sackOK,TS val 1342243858 ecr 0,nop,wscale 7], length 0 15:27:27.195160
+    IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto TCP (6), length 40)
+    127.0.0.1.2001 > 127.0.0.1.55590: Flags [R.], cksum 0x946e (correct), seq 0,
+    ack 1127217464, win 0, length 0
 
-     15:27:19.192319 IP (tos 0x0, ttl 64, id 57861, offset 0, flags [DF], proto
-  TCP (6), length 60) 127.0.0.1.50720 > 127.0.0.1.2001: Flags [S], cksum 0xfe30
-  (incorrect -> 0xb3db), seq 1553087697, win 65495, options [mss 65495,sackOK,TS
-  val 1342235856 ecr 0,nop,wscale 7], length 0 15:27:19.192345 IP (tos 0x0, ttl
-  64, id 0, offset 0, flags [DF], proto TCP (6), length 60) 127.0.0.1.2000 >
-  127.0.0.1.50720: Flags [S.], cksum 0xfe30 (incorrect -> 0x7bf5), seq
-  2242477415, ack 1553087698, win 65483, options [mss 65495,sackOK,TS val
-  1342235856 ecr 1342235856,nop,wscale 7], length 0 15:27:19.192359 IP (tos 0x0,
-  ttl 64, id 0, offset 0, flags [DF], proto TCP (6), length 40) 127.0.0.1.50720
-  > 127.0.0.1.2001: Flags [R], cksum 0x4a89 (incorrect -> 0x4a88), seq
-  1553087698, win 0, length 0
-      */
-
+       15:27:19.192319 IP (tos 0x0, ttl 64, id 57861, offset 0, flags [DF],
+    proto TCP (6), length 60) 127.0.0.1.50720 > 127.0.0.1.2001: Flags [S], cksum
+    0xfe30 (incorrect -> 0xb3db), seq 1553087697, win 65495, options [mss
+    65495,sackOK,TS val 1342235856 ecr 0,nop,wscale 7], length 0 15:27:19.192345
+    IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto TCP (6), length 60)
+    127.0.0.1.2000 > 127.0.0.1.50720: Flags [S.], cksum 0xfe30 (incorrect ->
+    0x7bf5), seq 2242477415, ack 1553087698, win 65483, options [mss
+    65495,sackOK,TS val 1342235856 ecr 1342235856,nop,wscale 7], length 0
+    15:27:19.192359 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto TCP
+    (6), length 40) 127.0.0.1.50720 > 127.0.0.1.2001: Flags [R], cksum 0x4a89
+    (incorrect -> 0x4a88), seq 1553087698, win 0, length 0
+        */
+    return TC_ACT_OK;
+  }
   return TC_ACT_OK;
 }
-
 // eBPF hooks - This is where the magic happens!
 SEC("tc_in")
 int tc_ingress(struct __sk_buff *skb) { return redirect_tcp(skb, true); }
