@@ -61,7 +61,7 @@ Security Lock 3>  [ ▮ ]
 
 The following line will connect through to the VM using SSH, it will also port forward from inside the VM (port 80) to port `8082` on your local machine. The reason for this is to allow the use of code-server to interact with the `eBPF` 🐝 code.
 
-`ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf`
+`ssh -F $HOME/.lima/ctf/ssh.config -L "*:8082:0.0.0.0:80" lima-ctf`
 
 To start `code-server` within the VM run the command `PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &`.
 
