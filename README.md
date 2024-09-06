@@ -67,7 +67,7 @@ To start `code-server` within the VM run the command `PASSWORD=password code-ser
 
 ## Setting up the eBPF code
 
-When attempting to use the eBPF code you will need to create the required ebpf headers `cd ebpf` & `./header.sh`. 
+All of the code lives within `~/eBPF` and is automatically created when you start the first shell, so if this is missing ensure you're following the instructions.
 
 ### Code-Server or Vim
 
