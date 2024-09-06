@@ -87,7 +87,7 @@ Each of the security locks presents a different challenge, some may involve modi
 ### Clues:
 
 
-- A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it. `/map`
+- A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it.
 
 <details>
 <summary>Clues</summary>
@@ -108,7 +108,7 @@ Each of the security locks presents a different challenge, some may involve modi
 </details>
 </details>
 
-- Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system. `/map` (or perhaps this can be done with `bpftool` 🤔)
+- Our spies managed to extract one of the vital keycodes from the emperium key vaults, they unfortunately deleted the emperium map in the process. Whilst we now have this data `brRz3HVSVzC6RXrBC2Y7`, we're not sure if this will impact the running `emperium` system. 📂`eBPF/map` (or perhaps this can be done with `bpftool` 🤔)
 
 <details>
 <summary>Clues</summary>
@@ -124,9 +124,9 @@ Each of the security locks presents a different challenge, some may involve modi
 </details>
 </details>
 
-- An archive taken from a stolen ship has revealed the third security lock is broken due to the authentication being pushed to the wrong port. One of the engineers has managed to put something together, but keeps muttering about "Endianness" and return ports. `/response/`
+- An archive taken from a stolen ship has revealed the third security lock is broken due to the authentication being pushed to the wrong port. One of the engineers has managed to put something together, but keeps muttering about "Endianness" and return ports. 📂`eBPF/response/`
   
-- A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to **"acknowledge"** the `emperium` system. The specialist that wrote most of this was reassigned after breaking his keyboard about a "verifier"? `/redirect/`
+- A defector has provided most of the code that is needed in order to create a fake `emperium` mainframe, once up this will be able to **"acknowledge"** the `emperium` system. The specialist that wrote most of this was reassigned after breaking his keyboard about a "verifier"? 📂`eBPF/redirect/`
 
 ## Additional
 
