@@ -1,6 +1,10 @@
-# ebpf Summit 2024 Capture the Flag ⛳️🐝 
+# eBPF Summit 2024 Capture the Flag ⛳️🐝 
 
 Welcome to the eBPF 2024 Summit CTF, this year the task will involve a number of challenges around various eBPF technologies. Some of the challenges will require use of CLI tools such as `bpftool` and some will require fixing or completing some partial code in order to complete the challenge.
+
+## Getting help and solving the CTF
+
+Please register at the [eBPF slack](https://slack.cilium.io) and join the `#ebpf-summit` & `#ebpf-summit-ctf-spoilers` channels! Here you will find help and clues, and also a place to submit your answers once you've completed the CTF!.
 
 ## Getting the CTF up and running !
 
@@ -83,10 +87,16 @@ In each of the folders in `~/eBPF` is some half completed eBPF 🐝 programs. Mo
 
 ## The challenge !
 
-`TBD` 
-The rebels have found access to the Sienar Fleet Systems, the tie fighter manufacturing mainframe. We believe that if we can get through all of the security locks that we will find the code that will allow us to disable the entire fleet !
+They are _everywhere_. This is a true infestation. Way worse than the rockmites you had to fight off to defend your giant bees, back in your days as a beekeeper. Worse, even, than the herd of mynocks you found in that asteroid field, when ambushing an Imperial transporter (which turned up to carry no sensitive information, but never mind, they freighted chocolates, and they're delicious). This time, they just won't stop coming. And they're big things, flying fast, with a terrible roar.
 
-Each of the security locks presents a different challenge, some may involve modifying an eBPF map and others may involve fixing some code in order to modify some networking to trick the mainframe into unlocking.
+These are TIE Fighters from the Empire. And they're after you.
+
+Jephen'Tsa is your name, and you've made life tough for the Empire. But this time, Imperials are the ones harassing your team. If they can't pin down the exact location of your Rebel base, they have a gross idea of the area where you're hiding, courtesy of your sworn enemy, the traitor Bajeroff Lake. Armadas of TIEs have been patrolling in the whole constellation, and every mission, every outing has been a pain. Sure, the Rebel Alliance has some of the best pilots in the galaxy, but for each fighter they strike down, five new ships come out of the factory. Your own vessel, the _Yellow Stripe_, is docked for repairs. This is untenable. If you could just stop enemy fighters from coming back...
+
+As it turns out, an opportunity came up this morning, thanks to the hard work of your friend and ally, Blue Hex. Her utility droid, IP-V6, just brought you to the control room, where Blue Hex explains how her spy network is getting close to disable the whole TIE fighter production lines, no less! She has established a hidden connection to the mainframe in the manufacturing facility, but disabling it requires accessing the core controls of the system, protected by **four** security locks. Oh wait, an alarm erupts! Some TIEs are nearby! Did they find your hideout at last? Blue Hex stops her briefing and jumps into her ship, imitated by the other pilots.
+
+But your own spacecraft is not ready, and for this time you're grounded. You should as well look into these security locks, to disable the factory. That would be quite an achievement... One more to add to your name? Sit down and relax. The Force is with you. You can do it. Let's start by sending IP-V6 fetch a few more of these delicious chocolates...
+
 
 ### Part 1 - unscramble the message 
 A hacker from the Zenith system in the employ of the Rebellion managed to get a communication out, whilst the quality was poor technicians managed to enhance enough of the audio to understand that the hacker may have "got it the wrong way around" and that the bpftool might be the best way to fix it.
