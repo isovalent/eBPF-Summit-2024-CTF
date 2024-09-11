@@ -28,7 +28,7 @@ provision:
   script: |
     #!/bin/sh
     sudo apt-get update; sudo apt-get install -y linux-tools-$(uname -r) libbpf-dev clang vim golang-go git llvm
-    sudo curl -L https://github.com/thebsdbox/emperium/raw/main/bin/emperium-$(uname -m) > /tmp/emperium && chmod +x /tmp/emperium
+    sudo curl -L https://github.com/isovalent/eBPF-Summit-2024-CTF/raw/main/bin/emperium-$(uname -m) > /tmp/emperium && chmod +x /tmp/emperium
 - mode: user
   script: |
     #!/bin/sh
@@ -45,5 +45,6 @@ message: |
   In another terminal connect with
   ssh -F $HOME/.lima/ctf/ssh.config -L *:8082:0.0.0.0:80 lima-ctf
 
-  Start code-server with $ PASSWORD=password code-server --bind-addr=0.0.0.0
+  Start code-server with:
+  PASSWORD=password code-server --bind-addr=0.0.0.0 > /tmp/code.log &
   ------
